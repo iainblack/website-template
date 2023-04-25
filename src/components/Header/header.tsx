@@ -27,9 +27,10 @@ export interface DynamicTab {
 }
 
 interface HeaderProps {
-  handleTabChange: (event: React.SyntheticEvent, newValue: number) => void;
+  handleTabChange?: (event: React.SyntheticEvent, newValue: number) => void;
   logo?: boolean;
   tabs: DynamicTab[];
+  animate?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ ...props }) => {
@@ -61,15 +62,17 @@ const Header: React.FC<HeaderProps> = ({ ...props }) => {
 
   useEffect(() => {
     if (scrollAfterDrawerClose.current) {
-      props.handleTabChange(
-        scrollAfterDrawerClose.current.event,
-        scrollAfterDrawerClose.current.index
-      );
+      props.handleTabChange &&
+        props.handleTabChange(
+          scrollAfterDrawerClose.current.event,
+          scrollAfterDrawerClose.current.index
+        );
       scrollAfterDrawerClose.current = undefined;
     }
   }, [drawerOpen]);
 
   useEffect(() => {
+    if (!props.animate) return;
     setTimeout(() => {
       setAnimateTabs(true);
     }, 1000);
@@ -149,10 +152,10 @@ const Header: React.FC<HeaderProps> = ({ ...props }) => {
           ref={containerRef}
         >
           <Slide
-            in={animateTabs}
+            in={props.animate ? animateTabs : true}
             direction="up"
             container={containerRef.current}
-            timeout={1000}
+            timeout={props.animate ? 1000 : 0}
           >
             <Tabs
               value={false}

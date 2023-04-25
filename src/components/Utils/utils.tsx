@@ -11,7 +11,7 @@ export function ScrollToTop(props: any) {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     // used to display button to scroll back to top of page when scrolling down
     // must set id="back-to-top-anchor" on element to scroll to
-    // then use like this
+    // then add this to the page:
     //    <ScrollTop>
     //       <Fab size="small" aria-label="scroll back to top">
     //         <KeyboardArrowUpIcon />

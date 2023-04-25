@@ -1,12 +1,13 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import Header, { DynamicTab } from "@/components/Header/header";
 import { AppBar, Box, CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "@/Theme";
 import styles from "@/styles/Home.module.css";
 import TitlePanel from "@/components/TitlePanel/TitlePanel";
 import React, { useState, useEffect } from "react";
 import ContentPanel from "@/components/ContentPanel/ContentPanel";
+import { useRouter } from "next/router";
+import Header, { DynamicTab } from "@/components/Header/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,46 +24,8 @@ interface TransitionState {
   transitionInThree: boolean;
 }
 
-const tabs: DynamicTab[] = [
-  {
-    name: "Scroll to One",
-  },
-  {
-    name: "Scroll to Two",
-  },
-  {
-    name: "Scroll to Three",
-  },
-  {
-    name: "External Nav",
-    external: true,
-    onClick: (event) => {
-      console.log("External nav clicked");
-    },
-  },
-  {
-    name: "Expandable Nav Tab",
-    onClick: (event) => {
-      console.log("contact clicked");
-    },
-    subTabs: [
-      {
-        name: "SubTab 1",
-        onClick: (event) => {
-          console.log("SubTab 1 clicked");
-        },
-      },
-      {
-        name: "SubTab 2",
-        onClick: (event) => {
-          console.log("SubTab 2 clicked");
-        },
-      },
-    ],
-  },
-];
-
 export default function Home() {
+  const router = useRouter();
   const [appBarState, setAppBarState] = useState<AppBarState>({
     transparent: true,
     elevated: false,
@@ -83,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      if (window.visualViewport?.height && scrollPosition < 5) {
+      if (window.visualViewport?.height && scrollPosition < 1) {
         setAppBarState({
           transparent: true,
           elevated: false,
@@ -97,6 +60,8 @@ export default function Home() {
       ) {
         setAppBarState({
           ...appBarState,
+          elevated: true,
+          transparent: false,
           display: false,
         });
       } else if (
@@ -105,7 +70,6 @@ export default function Home() {
       ) {
         setAppBarState({
           ...appBarState,
-          elevated: false,
           logo: true,
           display: true,
         });
@@ -176,6 +140,52 @@ export default function Home() {
     }
   };
 
+  const tabs: DynamicTab[] = [
+    {
+      name: "Scroll to One",
+    },
+    {
+      name: "Scroll to Two",
+    },
+    {
+      name: "Scroll to Three",
+    },
+    {
+      name: "Internal Route",
+      onClick: (event) => {
+        router.push("/navExample");
+      },
+    },
+    {
+      name: "External Route",
+      external: true,
+      onClick: (event) => {
+        window.open("https://www.google.com", "_blank");
+      },
+    },
+    {
+      name: "Expandable Nav Tab",
+      onClick: (event) => {
+        console.log("contact clicked");
+      },
+      subTabs: [
+        {
+          name: "External",
+          external: true,
+          onClick: (event) => {
+            window.open("https://www.google.com", "_blank");
+          },
+        },
+        {
+          name: "Internal",
+          onClick: (event) => {
+            router.push("/navExample");
+          },
+        },
+      ],
+    },
+  ];
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -189,7 +199,9 @@ export default function Home() {
           position="fixed"
           enableColorOnDark
           color="transparent"
+          elevation={appBarState.elevated ? 4 : 0}
           sx={{
+            display: appBarState.display ? "flex" : "none",
             backdropFilter: "blur(5px)",
             pl: { xs: 2, md: 6 },
             pr: 2,
@@ -199,6 +211,7 @@ export default function Home() {
             tabs={tabs}
             handleTabChange={handleTabChange}
             logo={appBarState.logo}
+            animate
           />
         </AppBar>
         <TitlePanel />
@@ -206,7 +219,7 @@ export default function Home() {
           <ContentPanel iterator={1} />
         </Box>
         <Box ref={refTwo}>
-          <ContentPanel iterator={2} />
+          <ContentPanel iterator={2} odd />
         </Box>
         <Box ref={refThree}>
           <ContentPanel iterator={3} />

@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { DynamicTab } from "./header";
 import { OpenInNewOutlined } from "@mui/icons-material";
+import { DynamicTab } from "./header";
 
 interface DrawerListProps {
   drawerOpen: boolean;

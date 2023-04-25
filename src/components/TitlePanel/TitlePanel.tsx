@@ -9,7 +9,11 @@ interface TitlePanelProps {}
 const TitlePanel: React.FC<TitlePanelProps> = ({ ...props }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   return (
-    <TitlePanelContainer>
+    <TitlePanelContainer
+      sx={{
+        mt: { xs: -5, sm: 0 },
+      }}
+    >
       <Image
         src="/default-bg.jpg"
         fill
@@ -39,8 +43,9 @@ const TitlePanel: React.FC<TitlePanelProps> = ({ ...props }) => {
                     sx={{
                       display: "flex",
                       justifyContent: "center",
+                      alignItems: "center",
                       height: "25vh",
-                      width: { xs: "80vw", md: "35vw" },
+                      width: { xs: "50vw", md: "20vw" },
                       position: "relative",
                       zIndex: 1,
                     }}
@@ -48,7 +53,7 @@ const TitlePanel: React.FC<TitlePanelProps> = ({ ...props }) => {
                     <Image
                       className={styles.logo}
                       src={"/next.svg"}
-                      alt="Benniditos"
+                      alt="Title Logo"
                       fill
                       sizes="100%"
                       priority={true}
