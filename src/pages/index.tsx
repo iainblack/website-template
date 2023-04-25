@@ -7,8 +7,9 @@ import TitlePanel from "@/components/TitlePanel/TitlePanel";
 import React, { useState, useEffect } from "react";
 import ContentPanel from "@/components/ContentPanel/ContentPanel";
 import { useRouter } from "next/router";
-import Header, { DynamicTab } from "@/components/Header/header";
 import { HideOnScroll } from "@/components/Utils/utils";
+import Header, { DynamicTab } from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,6 +48,8 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
+
+      // appBarState manipulation
       if (window.visualViewport?.height && scrollPosition < 1) {
         setAppBarState({
           transparent: true,
@@ -75,6 +78,8 @@ export default function Home() {
           display: true,
         });
       }
+
+      // Panel transitions
       const refOneTop = refOne.current?.offsetTop;
       const refTwoTop = refTwo.current?.offsetTop;
       const refThreeTop = refThree.current?.offsetTop;
@@ -110,10 +115,12 @@ export default function Home() {
         });
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [appBarState, transitionState]);
 
+  // scroll to content
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     switch (newValue) {
       case 0:
@@ -141,6 +148,7 @@ export default function Home() {
     }
   };
 
+  // create tabs for header and drawer
   const tabs: DynamicTab[] = [
     {
       name: "Scroll to One",
@@ -219,14 +227,25 @@ export default function Home() {
         </HideOnScroll>
         <TitlePanel />
         <Box ref={refOne}>
-          <ContentPanel iterator={1} />
+          <ContentPanel
+            iterator={1}
+            transitionIn={transitionState.transitionInOne}
+          />
         </Box>
         <Box ref={refTwo}>
-          <ContentPanel iterator={2} odd />
+          <ContentPanel
+            iterator={2}
+            odd
+            transitionIn={transitionState.transitionInTwo}
+          />
         </Box>
         <Box ref={refThree}>
-          <ContentPanel iterator={3} />
+          <ContentPanel
+            iterator={3}
+            transitionIn={transitionState.transitionInThree}
+          />
         </Box>
+        <Footer odd={true} />
       </main>
     </ThemeProvider>
   );

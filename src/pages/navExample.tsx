@@ -5,7 +5,7 @@ import theme from "@/Theme";
 import React, { useState, useEffect } from "react";
 import ContentPanel from "@/components/ContentPanel/ContentPanel";
 import { useRouter } from "next/router";
-import Header, { DynamicTab } from "@/components/Header/header";
+import Header, { DynamicTab } from "@/components/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
