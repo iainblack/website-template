@@ -1,114 +1,217 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import { Inter } from "next/font/google";
+import Header, { DynamicTab } from "@/components/Header/header";
+import { AppBar, Box, CssBaseline, ThemeProvider } from "@mui/material";
+import theme from "@/Theme";
+import styles from "@/styles/Home.module.css";
+import TitlePanel from "@/components/TitlePanel/TitlePanel";
+import React, { useState, useEffect } from "react";
+import ContentPanel from "@/components/ContentPanel/ContentPanel";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
+
+interface AppBarState {
+  transparent: boolean;
+  elevated: boolean;
+  logo: boolean;
+  display: boolean;
+}
+
+interface TransitionState {
+  transitionInOne: boolean;
+  transitionInTwo: boolean;
+  transitionInThree: boolean;
+}
+
+const tabs: DynamicTab[] = [
+  {
+    name: "Scroll to One",
+  },
+  {
+    name: "Scroll to Two",
+  },
+  {
+    name: "Scroll to Three",
+  },
+  {
+    name: "External Nav",
+    external: true,
+    onClick: (event) => {
+      console.log("External nav clicked");
+    },
+  },
+  {
+    name: "Expandable Nav Tab",
+    onClick: (event) => {
+      console.log("contact clicked");
+    },
+    subTabs: [
+      {
+        name: "SubTab 1",
+        onClick: (event) => {
+          console.log("SubTab 1 clicked");
+        },
+      },
+      {
+        name: "SubTab 2",
+        onClick: (event) => {
+          console.log("SubTab 2 clicked");
+        },
+      },
+    ],
+  },
+];
 
 export default function Home() {
+  const [appBarState, setAppBarState] = useState<AppBarState>({
+    transparent: true,
+    elevated: false,
+    logo: false,
+    display: true,
+  });
+
+  const [transitionState, setTransitionState] = useState<TransitionState>({
+    transitionInOne: false,
+    transitionInTwo: false,
+    transitionInThree: false,
+  });
+
+  const refOne = React.useRef<HTMLDivElement>(null);
+  const refTwo = React.useRef<HTMLDivElement>(null);
+  const refThree = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      if (window.visualViewport?.height && scrollPosition < 5) {
+        setAppBarState({
+          transparent: true,
+          elevated: false,
+          logo: false,
+          display: true,
+        });
+      } else if (
+        window.visualViewport?.height &&
+        scrollPosition > 5 &&
+        scrollPosition < window.visualViewport?.height
+      ) {
+        setAppBarState({
+          ...appBarState,
+          display: false,
+        });
+      } else if (
+        window.visualViewport?.height &&
+        scrollPosition > window.visualViewport?.height
+      ) {
+        setAppBarState({
+          ...appBarState,
+          elevated: false,
+          logo: true,
+          display: true,
+        });
+      }
+      const refOneTop = refOne.current?.offsetTop;
+      const refTwoTop = refTwo.current?.offsetTop;
+      const refThreeTop = refThree.current?.offsetTop;
+
+      if (
+        refOneTop &&
+        !transitionState.transitionInOne &&
+        scrollPosition > refOneTop - 500
+      ) {
+        setTransitionState({
+          ...transitionState,
+          transitionInOne: true,
+        });
+      }
+      if (
+        refTwoTop &&
+        !transitionState.transitionInTwo &&
+        scrollPosition > refTwoTop - 500
+      ) {
+        setTransitionState({
+          ...transitionState,
+          transitionInTwo: true,
+        });
+      }
+      if (
+        refThreeTop &&
+        !transitionState.transitionInThree &&
+        scrollPosition > refThreeTop - 500
+      ) {
+        setTransitionState({
+          ...transitionState,
+          transitionInThree: true,
+        });
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [appBarState, transitionState]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    switch (newValue) {
+      case 0:
+        refOne.current &&
+          refOne.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        break;
+      case 1:
+        refTwo.current &&
+          refTwo.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        break;
+      case 2:
+        refThree.current &&
+          refThree.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        break;
+      default:
+    }
+  };
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
+        <title>Template</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
+      <main className={`${inter.className}`}>
+        <AppBar
+          position="fixed"
+          enableColorOnDark
+          color="transparent"
+          sx={{
+            backdropFilter: "blur(5px)",
+            pl: { xs: 2, md: 6 },
+            pr: 2,
+          }}
+        >
+          <Header
+            tabs={tabs}
+            handleTabChange={handleTabChange}
+            logo={appBarState.logo}
           />
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+        </AppBar>
+        <TitlePanel />
+        <Box ref={refOne}>
+          <ContentPanel iterator={1} />
+        </Box>
+        <Box ref={refTwo}>
+          <ContentPanel iterator={2} />
+        </Box>
+        <Box ref={refThree}>
+          <ContentPanel iterator={3} />
+        </Box>
       </main>
-    </>
-  )
+    </ThemeProvider>
+  );
 }
