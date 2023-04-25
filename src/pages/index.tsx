@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import ContentPanel from "@/components/ContentPanel/ContentPanel";
 import { useRouter } from "next/router";
 import Header, { DynamicTab } from "@/components/Header/header";
+import { HideOnScroll } from "@/components/Utils/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -195,25 +196,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${inter.className}`}>
-        <AppBar
-          position="fixed"
-          enableColorOnDark
-          color="transparent"
-          elevation={appBarState.elevated ? 4 : 0}
-          sx={{
-            display: appBarState.display ? "flex" : "none",
-            backdropFilter: "blur(5px)",
-            pl: { xs: 2, md: 6 },
-            pr: 2,
-          }}
-        >
-          <Header
-            tabs={tabs}
-            handleTabChange={handleTabChange}
-            logo={appBarState.logo}
-            animate
-          />
-        </AppBar>
+        <HideOnScroll>
+          <AppBar
+            position="fixed"
+            enableColorOnDark
+            color="transparent"
+            elevation={appBarState.elevated ? 4 : 0}
+            sx={{
+              display: appBarState.display ? "flex" : "none",
+              backdropFilter: "blur(5px)",
+              pl: { xs: 2, md: 6 },
+              pr: 2,
+            }}
+          >
+            <Header
+              tabs={tabs}
+              handleTabChange={handleTabChange}
+              logo={appBarState.logo}
+              animate
+            />
+          </AppBar>
+        </HideOnScroll>
         <TitlePanel />
         <Box ref={refOne}>
           <ContentPanel iterator={1} />
