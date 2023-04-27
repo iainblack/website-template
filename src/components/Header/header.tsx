@@ -181,59 +181,56 @@ const Header: React.FC<HeaderProps> = ({ ...props }) => {
                 />
               ))}
               {props.tabs?.map((navTab, index) => (
-                <Box key={index}>
-                  {navTab.subTabs && navTab.subTabs.length > 0 && (
-                    <Popover
-                      disableScrollLock
-                      open={popoverOpen}
-                      anchorEl={anchorEl}
-                      onClose={handleExpandableTabClose}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "center",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
-                      }}
-                      PaperProps={{
-                        sx: {
-                          borderRadius: 1,
-                          border: 1,
-                        },
-                      }}
-                    >
-                      <List>
-                        {navTab.subTabs &&
-                          navTab.subTabs.length > 0 &&
-                          navTab.subTabs.map((subTab, index) => (
-                            <ListItem key={index} disablePadding>
-                              <ListItemButton
-                                sx={{
-                                  whiteSpace: "nowrap",
-                                  "&:hover": {
-                                    color: "primary.main",
-                                    borderColor: "none",
-                                  },
-                                }}
-                                onClick={(e) => {
-                                  subTab.onClick && subTab.onClick(e as any);
-                                  handleExpandableTabClose();
-                                }}
-                              >
-                                <ListItemText
-                                  primary={subTab.name}
-                                  primaryTypographyProps={{
-                                    textAlign: "center",
-                                  }}
-                                />
-                              </ListItemButton>
-                            </ListItem>
-                          ))}
-                      </List>
-                    </Popover>
-                  )}
-                </Box>
+                <Popover
+                  key={`popover-${index}`}
+                  disableScrollLock
+                  open={popoverOpen}
+                  anchorEl={anchorEl}
+                  onClose={handleExpandableTabClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  PaperProps={{
+                    sx: {
+                      borderRadius: 1,
+                      border: 1,
+                    },
+                  }}
+                >
+                  <List>
+                    {navTab.subTabs &&
+                      navTab.subTabs.length > 0 &&
+                      navTab.subTabs.map((subTab, index) => (
+                        <ListItem key={index} disablePadding>
+                          <ListItemButton
+                            sx={{
+                              whiteSpace: "nowrap",
+                              "&:hover": {
+                                color: "primary.main",
+                                borderColor: "none",
+                              },
+                            }}
+                            onClick={(e) => {
+                              subTab.onClick && subTab.onClick(e as any);
+                              handleExpandableTabClose();
+                            }}
+                          >
+                            <ListItemText
+                              primary={subTab.name}
+                              primaryTypographyProps={{
+                                textAlign: "center",
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                  </List>
+                </Popover>
               ))}
             </Tabs>
           </Slide>
